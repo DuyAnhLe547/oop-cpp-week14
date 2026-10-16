@@ -1,0 +1,278 @@
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Employee {
+private:
+    int cccd;
+    string name;
+    double salary;
+
+public:
+    Employee() {
+        cccd = 0;
+        name = "";
+        salary = 0;
+    }
+
+    Employee(int c, string n, double s) {
+        cccd = c;
+        name = n;
+        salary = s;
+    }
+
+    int getCCCD() const {
+        return cccd;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    double getSalary() const {
+        return salary;
+    }
+
+    void setCCCD(int c) {
+        cccd = c;
+    }
+
+    void setName(string n) {
+        name = n;
+    }
+
+    void setSalary(double s) {
+        salary = s;
+    }
+
+    void displayInfo() const {
+        cout << "CCCD: " << cccd << endl;
+        cout << "Name: " << name << endl;
+    }
+};
+
+
+class HourlyEmployee : public Employee {
+private:
+    int hours, month, year;
+    double salaryperhours;
+
+public:
+    HourlyEmployee() : Employee() {
+        hours = 0;
+        salaryperhours = 0;
+        month = 1;
+        year = 2026;
+    }
+
+    HourlyEmployee(int c, string n, int h, double rate,
+                   int m, int y)
+        : Employee(c, n, 0) {
+        hours = h;
+        salaryperhours = rate;
+        month = m;
+        year = y;
+    }
+
+    int getHours() const {
+        return hours;
+    }
+
+    double getSalaryPerHours() const {
+        return salaryperhours;
+    }
+
+    int getMonth() const {
+        return month;
+    }
+
+    int getYear() const {
+        return year;
+    }
+
+    void setHours(int h) {
+        hours = h;
+    }
+
+    void setSalaryPerHours(double rate) {
+        salaryperhours = rate;
+    }
+
+    void setMonth(int m) {
+        month = m;
+    }
+
+    void setYear(int y) {
+        year = y;
+    }
+
+    double calculateSalary(int m, int y) const {
+        if (m == month && y == year)
+            return hours * salaryperhours;
+
+        return 0;
+    }
+
+    void displayInfo() const {
+        Employee::displayInfo();
+        cout << "Hours: " << hours << endl;
+        cout << "Salary per hour: " << salaryperhours << endl;
+        cout << "Month: " << month << endl;
+        cout << "Year: " << year << endl;
+        cout << "Salary: " << calculateSalary(month, year) << endl;
+    }
+};
+
+
+class MonthlyEmployee : public Employee {
+private:
+    int month, year;
+
+public:
+    MonthlyEmployee() : Employee() {
+        month = 1;
+        year = 2026;
+    }
+
+    MonthlyEmployee(int c, string n, double monthlySalary, int m, int y) : Employee(c, n, monthlySalary) {
+        month = m;
+        year = y;
+    }
+
+    int getMonth() const {
+        return month;
+    }
+
+    int getYear() const {
+        return year;
+    }
+
+    void setMonth(int m) {
+        month = m;
+    }
+
+    void setYear(int y) {
+        year = y;
+    }
+
+    double calculateSalary(int m, int y) const {
+        if (m == month && y == year)
+            return getSalary();
+
+        return 0;
+    }
+
+    double calculateYearlySalary(int y) const {
+        if (y == year)
+            return getSalary() * 12;
+
+        return 0;
+    }
+
+    void displayInfo() const {
+        Employee::displayInfo();
+        cout << "Monthly salary: " << getSalary() << endl;
+        cout << "Month: " << month << endl;
+        cout << "Year: " << year << endl;
+        cout << "Salary: " << calculateSalary(month, year) << endl;
+    }
+};
+
+
+class DailyEmployee : public Employee {
+private:
+    int numberofdays, month, year;
+
+public:
+    DailyEmployee() : Employee() {
+        numberofdays = 0;
+        month = 1;
+        year = 2026;
+    }
+
+    DailyEmployee(int c, string n, double salaryPerDay, int days, int m, int y) : Employee(c, n, salaryPerDay) {
+        numberofdays = days;
+        month = m;
+        year = y;
+    }
+
+    int getNumberOfDays() const {
+        return numberofdays;
+    }
+
+    int getMonth() const {
+        return month;
+    }
+
+    int getYear() const {
+        return year;
+    }
+
+    void setNumberOfDays(int days) {
+        numberofdays = days;
+    }
+
+    void setMonth(int m) {
+        month = m;
+    }
+
+    void setYear(int y) {
+        year = y;
+    }
+
+    double calculateSalary(int m, int y) const {
+        if (m == month && y == year)
+            return numberofdays * getSalary();
+
+        return 0;
+    }
+
+    void displayInfo() const {
+        Employee::displayInfo();
+        cout << "Number of days: " << numberofdays << endl;
+        cout << "Salary per day: " << getSalary() << endl;
+        cout << "Month: " << month << endl;
+        cout << "Year: " << year << endl;
+        cout << "Salary: "
+             << calculateSalary(month, year) << endl;
+    }
+};
+
+int main() {
+    HourlyEmployee h1(1, "An", 160, 50000, 10, 2026);
+    MonthlyEmployee m1(2, "Binh", 15000000, 10, 2026);
+    DailyEmployee d1(3, "Chi", 300000, 22, 10, 2026);
+
+    h1.displayInfo();
+
+    m1.displayInfo();
+
+    d1.displayInfo();
+
+    int month, year;
+
+    cout << "\nEnter month: ";
+    cin >> month;
+
+    cout << "Enter year: ";
+    cin >> year;
+
+    double totalSalary = 0;
+
+    double salaryH = h1.calculateSalary(month, year);
+    double salaryM = m1.calculateSalary(month, year);
+    double salaryD = d1.calculateSalary(month, year);
+
+    cout << h1.getName() << ": " << salaryH << endl;
+    cout << m1.getName() << ": " << salaryM << endl;
+    cout << d1.getName() << ": " << salaryD << endl;
+
+    totalSalary = salaryH + salaryM + salaryD;
+
+    cout << "Total salary: " << totalSalary << endl;
+
+    cout << "\nYearly salary of Binh: " << m1.calculateYearlySalary(year) << endl;
+
+    return 0;
+}
