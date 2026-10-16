@@ -1,0 +1,253 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+class PhuongTien {
+private:
+    string hangXe;
+    string mauXe;
+    double donGia;
+
+public:
+    PhuongTien() {
+        hangXe = "";
+        mauXe = "";
+        donGia = 0;
+    }
+
+    PhuongTien(string h, string m, double g) {
+        hangXe = h;
+        mauXe = m;
+        donGia = g;
+    }
+
+    string getHangXe() {
+        return hangXe;
+    }
+
+    string getMauXe() {
+        return mauXe;
+    }
+
+    double getDonGia() {
+        return donGia;
+    }
+
+    void setHangXe(string h) {
+        hangXe = h;
+    }
+
+    void setMauXe(string m) {
+        mauXe = m;
+    }
+
+    void setDonGia(double g) {
+        donGia = g;
+    }
+
+    virtual void hienThiThongTin() {
+        cout << "Hang xe: " << hangXe << endl;
+        cout << "Mau xe: " << mauXe << endl;
+        cout << "Don gia thuey: " << donGia << endl;
+    }
+
+    virtual double tinhPhiThue(int soNgay) {
+        return soNgay * donGia;
+    }
+
+    virtual ~PhuongTien() {}
+};
+
+class car : public PhuongTien {
+private:
+    int soGhe;
+
+public:
+    car() : PhuongTien() {
+        soGhe = 0;
+    }
+
+    car(string h, string m, double g, int s)
+        : PhuongTien(h, m, g) {
+        soGhe = s;
+    }
+
+    int getSoGhe() {
+        return soGhe;
+    }
+
+    void setSoGhe(int s) {
+        soGhe = s;
+    }
+
+    void hienThiThongTin() override {
+        cout << "Loai phuong tien: car" << endl;
+        PhuongTien::hienThiThongTin();
+        cout << "So ghe: " << soGhe << endl;
+    }
+
+    double tinhPhiThue(int soNgay) override {
+        double phi = soNgay * getDonGia();
+
+        if (soNgay >= 7)
+            phi *= 0.9;
+
+        return phi;
+    }
+};
+
+class motor : public PhuongTien {
+private:
+    int dungTichXiLanh;
+
+public:
+    motor() : PhuongTien() {
+        dungTichXiLanh = 0;
+    }
+
+    motor(string h, string m, double g, int d)
+        : PhuongTien(h, m, g) {
+        dungTichXiLanh = d;
+    }
+
+    int getDungTichXiLanh() {
+        return dungTichXiLanh;
+    }
+
+    void setDungTichXiLanh(int d) {
+        dungTichXiLanh = d;
+    }
+
+    void hienThiThongTin() override {
+        cout << "Loai phuong tien: Xe may" << endl;
+        PhuongTien::hienThiThongTin();
+        cout << "Dung tich xi lanh: " << dungTichXiLanh << endl;
+    }
+
+    double tinhPhiThue(int soNgay) override {
+        double phi = soNgay * getDonGia();
+
+        if (soNgay >= 5)
+            phi *= 0.95;
+
+        return phi;
+    }
+};
+
+class truck : public PhuongTien {
+private:
+    double phiVanChuyen;
+
+public:
+    truck() : PhuongTien() {
+        phiVanChuyen = 0;
+    }
+
+    truck(string h, string m, double g, double p)
+        : PhuongTien(h, m, g) {
+        phiVanChuyen = p;
+    }
+
+    double getPhiVanChuyen() {
+        return phiVanChuyen;
+    }
+
+    void setPhiVanChuyen(double p) {
+        phiVanChuyen = p;
+    }
+
+    void hienThiThongTin() override {
+        cout << "Loai phuong tien: Xe tai" << endl;
+        PhuongTien::hienThiThongTin();
+        cout << "Phi van chuyen: "
+             << phiVanChuyen << endl;
+    }
+
+    double tinhPhiThue(int soNgay) override {
+        return soNgay * getDonGia() + phiVanChuyen;
+    }
+};
+
+void hienThiDanhSach(vector<PhuongTien*>& danhSach) {
+    for (int i = 0; i < danhSach.size(); i++) {
+        cout << "Phuong tien " << i + 1 << endl;
+
+        danhSach[i]->hienThiThongTin();
+    }
+}
+
+double tinhTongDoanhThu(vector<PhuongTien*>& danhSach,
+                        int soNgay) {
+    double tong = 0;
+
+    for (int i = 0; i < danhSach.size(); i++) {
+        tong += danhSach[i]->tinhPhiThue(soNgay);
+    }
+
+    return tong;
+}
+
+void timPhuongTienPhiThueCaoNhat(
+    vector<PhuongTien*>& danhSach, int soNgay) {
+
+    if (danhSach.empty()) {
+        cout << "Danh sach phuong tien rong!\n";
+        return;
+    }
+
+    int viTriMax = 0;
+    double phiMax = danhSach[0]->tinhPhiThue(soNgay);
+
+    for (int i = 1; i < danhSach.size(); i++) {
+        double phi = danhSach[i]->tinhPhiThue(soNgay);
+
+        if (phi > phiMax) {
+            phiMax = phi;
+            viTriMax = i;
+        }
+    }
+
+    danhSach[viTriMax]->hienThiThongTin();
+
+    cout << "Phi thue: " << phiMax << endl;
+}
+
+int main() {
+    vector<PhuongTien*> danhSach;
+
+    danhSach.push_back(new car("Toyota", "Vios", 800000, 5));
+    danhSach.push_back(new motor("Honda", "Vision", 150000, 110));
+    danhSach.push_back(new truck("Hyundai", "Mighty", 1500000, 500000));
+
+    int soNgay;
+
+    cout << "Nhap so ngay thue: ";
+    cin >> soNgay;
+
+    if (soNgay <= 0) {
+        cout << "So ngay thue khong hop le" << endl;
+
+        for (int i = 0; i < danhSach.size(); i++)
+            delete danhSach[i];
+
+        return 0;
+    }
+
+    cout << fixed << setprecision(0);
+
+    hienThiDanhSach(danhSach);
+
+    cout << "\nTong doanh thu cho thue: " << tinhTongDoanhThu(danhSach, soNgay) << " VND\n";
+
+    timPhuongTienPhiThueCaoNhat(danhSach, soNgay);
+
+    for (int i = 0; i < danhSach.size(); i++)
+        delete danhSach[i];
+
+    danhSach.clear();
+
+    return 0;
+}
