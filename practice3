@@ -1,0 +1,153 @@
+
+#include <iostream>
+using namespace std;
+
+class Drinks {
+public:
+    double coffee, tea, smoothies, juices;
+
+    Drinks(double c = 0, double t = 0,
+           double s = 0, double j = 0) {
+        coffee = c;
+        tea = t;
+        smoothies = s;
+        juices = j;
+    }
+
+    double tongDoanhThu() {
+        return coffee + tea + smoothies + juices;
+    }
+};
+
+class Foods {
+public:
+    double cake, breads;
+
+    Foods(double c = 0, double b = 0) {
+        cake = c;
+        breads = b;
+    }
+
+    double tongDoanhThu() {
+        return cake + breads;
+    }
+};
+
+class Day {
+public:
+    int day, month, year;
+    Drinks drinks;
+    Foods foods;
+
+    Day(int d = 0, int m = 0, int y = 0,
+        Drinks dr = Drinks(), Foods fo = Foods()) {
+        day = d;
+        month = m;
+        year = y;
+        drinks = dr;
+        foods = fo;
+    }
+
+    double tongDoanhThu() {
+        return drinks.tongDoanhThu() + foods.tongDoanhThu();
+    }
+};
+
+bool ngayHopLe(int d, int m, int y) {
+    if (y < 1 || m < 1 || m > 12)
+        return false;
+
+    int maxDay;
+
+    if (m == 4 || m == 6 || m == 9 || m == 11)
+        maxDay = 30;
+    else if (m == 2) {
+        if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
+            maxDay = 29;
+        else
+            maxDay = 28;
+    }
+    else
+        maxDay = 31;
+
+    return d >= 1 && d <= maxDay;
+}
+
+double tongDoanhThuTheoNgay(Day records[], int n,
+                            int d, int m, int y) {
+    for (int i = 0; i < n; i++) {
+        if (records[i].day == d && records[i].month == m && records[i].year == y) {
+            return records[i].tongDoanhThu();
+        }
+    }
+
+    return -1;
+}
+
+int main() {
+    int n;
+    cout << "Nhap so ngay can luu: ";
+    cin >> n;
+
+    if (n <= 0 || n > 100) {
+        cout << "nhap lai\n";
+        return 0;
+    }
+
+    Day records[100];
+
+    for (int i = 0; i < n; i++) {
+        int d, m, y;
+        double coffee, tea, smoothies, juices;
+        double cake, breads;
+
+        cout << "\nNhap du lieu ngay thu " << i + 1 << ":\n";
+
+        cout << "Nhap ngay thang nam: ";
+        cin >> d >> m >> y;
+
+        if (!ngayHopLe(d, m, y)) {
+            cout << "Ngay khong hop le!\n";
+            return 0;
+        }
+
+        cout << "Doanh thu coffee: ";
+        cin >> coffee;
+        cout << "Doanh thu tea: ";
+        cin >> tea;
+        cout << "Doanh thu smoothies: ";
+        cin >> smoothies;
+        cout << "Doanh thu juices: ";
+        cin >> juices;
+
+        cout << "Doanh thu cake: ";
+        cin >> cake;
+        cout << "Doanh thu breads: ";
+        cin >> breads;
+
+        records[i] = Day(
+            d, m, y,
+            Drinks(coffee, tea, smoothies, juices),
+            Foods(cake, breads)
+        );
+    }
+
+    int d, m, y;
+
+    cout << "\nNhap ngay can tim: ";
+    cin >> d >> m >> y;
+
+    if (!ngayHopLe(d, m, y)) {
+        cout << "nhap lai\n";
+        return 0;
+    }
+
+    double doanhThu = tongDoanhThuTheoNgay(records, n, d, m, y);
+
+    if (doanhThu == -1)
+        cout << "Khong tim thay du lieu ngay nay" << endl;
+    else
+        cout << "Tong doanh thu ngay " << d << "/" << m << "/" << y << " la: " << doanhThu << " " << endl;
+
+    return 0;
+}
